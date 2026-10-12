@@ -20,17 +20,21 @@
 ## 安装与运行
 
 ```bash
-cd /home/jerry/Projects/fingerprint-browser
-python3 -m venv .venv
-source .venv/bin/activate
+git clone https://github.com/JerryBlackoo/fingerprint-browser.git
+cd fingerprint-browser
+./run.sh
+```
+
+或手动：
+
+```bash
+python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 playwright install chromium
-
-# 可选：与 AdsPower 一样用 Bearer 保护 API
-# export FB_API_KEY=your_secret
-
 uvicorn app.main:app --host 127.0.0.1 --port 50326
 ```
+
+可选：`export FB_API_KEY=your_secret` 启用 Local API Bearer 鉴权。
 
 浏览器打开：**http://127.0.0.1:50326/**
 
