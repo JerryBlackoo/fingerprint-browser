@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>环境管理 · Fingerprint Browser</title>
+  <link rel="stylesheet" href="/assets/style.css" />
+</head>
+<body>
+  <header>
+    <h1>环境管理</h1>
+    <p class="sub">基础 / 代理 / 账号 / 指纹 / 高级 — 对齐 AdsPower 主要字段</p>
+  </header>
+  <section class="toolbar">
+    <button id="btnRefresh">刷新</button>
+    <button id="btnNew" class="primary">新建环境</button>
+  </section>
+  <table>
+    <thead>
+      <tr>
+        <th>名称</th>
+        <th>ID</th>
+        <th>分组</th>
+        <th>代理</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <dialog id="dlg">
+    <form method="dialog" id="form">
+      <input type="hidden" name="profile_id" value="" />
+      <h2 id="dlgTitle">新建环境</h2>
+      <nav class="tabs">
+        <button type="button" class="tab active" data-tab="basic">基础</button>
+        <button type="button" class="tab" data-tab="proxy">代理</button>
+        <button type="button" class="tab" data-tab="account">账号</button>
+        <button type="button" class="tab" data-tab="fp">指纹</button>
+        <button type="button" class="tab" data-tab="adv">高级</button>
+      </nav>
+
+      <div class="tab-panel active" data-panel="basic">
+        <label>名称 <input name="name" required /></label>
+        <label>分组 <input name="group" value="default" /></label>
+        <label>备注 <textarea name="remark" rows="2"></textarea></label>
+        <label>启动 URL（标签页，可留空用账号平台默认）<input name="startup_url" placeholder="https://www.browserscan.net/" /></label>
+        <label>操作系统
+          <select name="platform">
+            <option value="Win32">Windows</option>
+            <option value="MacIntel">macOS</option>
+            <option value="Linux x86_64">Linux</option>
+          </select>
+        </label>
+        <label>User-Agent <textarea name="user_agent" rows="3">Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36</textarea></label>
+      </div>
+
+      <div class="tab-panel" data-panel="proxy">
+        <label>代理类型
+          <select name="proxy_mode">
+            <option value="none">无（本地直连）</option>
+            <option value="http">HTTP</option>
+            <option value="socks5">SOCKS5</option>
+          </select>
+        </label>
+        <label>Host <input name="proxy_host" placeholder="179.255.148.223 或 127.0.0.1" /></label>
+        <label>Port <input name="proxy_port" type="number" placeholder="7890" /></label>
+        <label>用户名 <input name="proxy_username" autocomplete="off" /></label>
+        <label>密码 <input name="proxy_password" type="password" autocomplete="off" /></label>
+      </div>
+
+      <div class="tab-panel" data-panel="account">
+        <label>账号平台（预设登录页）
+          <select name="account_platform" id="accountPlatform">
+            <option value="">无</option>
+            <option value="google">Google</option>
+            <option value="facebook">Facebook</option>
+            <option value="amazon">Amazon</option>
+            <option value="twitter">X (Twitter)</option>
+            <option value="custom">自定义</option>
+          </select>
+        </label>
+        <label>平台账号（可选，明文存本地 profiles.json）
+          <span class="row2">
+            <input name="acc_username" placeholder="用户名 / 邮箱" autocomplete="off" />
+            <input name="acc_password" type="password" placeholder="密码" autocomplete="off" />
+          </span>
+        </label>
+        <label>平台登录 URL（custom 时填写）<input name="acc_login_url" placeholder="https://..." /></label>
+        <label>Cookie JSON（AdsPower / Chrome 导出数组）
+          <textarea name="cookies_json" rows="6" placeholder='[{"name":"...","value":"...","domain":".example.com"}]'></textarea>
+        </label>
+        <label class="inline"><input type="checkbox" name="cookie_merge" checked /> 合并 Cookie（不勾选则启动前清空再写入）</label>
+        <button type="button" id="btnValidateCookies" class="small">校验 Cookie JSON</button>
+      </div>
+
+      <div class="tab-panel" data-panel="fp">
+        <label>IP 查询（用于「基于 IP」）
+          <span class="row2">
+            <input name="ip_lookup_hint" placeholder="代理 IP，如 179.255.148.223" />
+            <button type="button" id="btnApplyIp" class="small">根据 IP 填充</button>
+          </span>
+        </label>
+        <label>时区
+          <select name="timezone_mode">
+            <option value="manual">自定义</option>
+            <option value="based_on_ip">基于 IP</option>
+          </select>
+          <input name="timezone_id" value="America/New_York" />
+        </label>
+        <label>语言
+          <select name="language_mode">
+            <option value="manual">自定义</option>
+            <option value="based_on_ip">基于 IP</option>
+          </select>
+          <input name="languages" value="en-US,en" placeholder="逗号分隔" />
+          <input name="locale" value="en-US" placeholder="locale" />
+        </label>
+        <label>地理位置
+          <select name="geolocation_mode">
+            <option value="manual">自定义</option>
+            <option value="based_on_ip">基于 IP</option>
+            <option value="off">禁止</option>
+          </select>
+          <span class="row2">
+            <input name="geolocation_lat" type="number" step="any" placeholder="纬度" />
+            <input name="geolocation_lon" type="number" step="any" placeholder="经度" />
+          </span>
+        </label>
+        <label>分辨率 宽 × 高
+          <span class="row2">
+            <input name="viewport_width" type="number" value="1920" />
+            <input name="viewport_height" type="number" value="1080" />
+          </span>
+        </label>
+        <label>设备像素比 <input name="device_scale_factor" type="number" step="0.1" value="1" /></label>
+        <label>WebRTC
+          <select name="webrtc_policy">
+            <option value="disable_non_proxied_udp">代理 UDP</option>
+            <option value="disable">禁用</option>
+            <option value="default">真实</option>
+          </select>
+        </label>
+        <label>Canvas
+          <select name="canvas_mode"><option value="real">真实</option><option value="noise">噪音</option></select>
+          种子 <input name="canvas_noise_seed" type="number" value="42" style="width:5rem" />
+        </label>
+        <label>AudioContext
+          <select name="audio_mode"><option value="real">真实</option><option value="noise">噪音</option></select>
+        </label>
+        <label>ClientRects
+          <select name="client_rects_mode"><option value="real">真实</option><option value="noise">噪音</option></select>
+        </label>
+        <label>字体
+          <select name="fonts_mode"><option value="default">默认</option><option value="custom">自定义列表</option></select>
+        </label>
+        <label>字体列表（逗号分隔，custom 时生效）<input name="fonts_list" value="Arial,Helvetica,Times New Roman,Courier New,Verdana,Georgia" /></label>
+        <label>WebGL 厂商 <input name="webgl_vendor" value="Google Inc. (Intel)" /></label>
+        <label>WebGL 渲染器 <input name="webgl_renderer" value="ANGLE (Intel, Intel(R) UHD Graphics 630, OpenGL 4.6)" /></label>
+        <label>WebGPU
+          <select name="webgpu_mode">
+            <option value="based_on_webgl">基于 WebGL</option>
+            <option value="real">真实</option>
+            <option value="disabled">禁用</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="tab-panel" data-panel="adv">
+        <label>CPU 核心数 <input name="hardware_concurrency" type="number" value="8" /></label>
+        <label>内存 deviceMemory (GB) <input name="device_memory" type="number" step="0.5" value="8" /></label>
+        <p class="hint">启动参数、SpeechVoices、媒体设备等 AdsPower 高级项后续版本扩展；当前 Cookie/指纹/基于 IP 已可用。</p>
+      </div>
+
+      <menu>
+        <button type="button" id="btnCancel">取消</button>
+        <button type="submit" class="primary" id="btnSave">创建</button>
+      </menu>
+    </form>
+  </dialog>
+  <script src="/assets/app.js"></script>
+</body>
+</html>

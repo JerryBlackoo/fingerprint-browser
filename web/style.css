@@ -1,0 +1,66 @@
+* { box-sizing: border-box; }
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  background: #f4f6f9;
+  color: #1a1a1a;
+}
+header {
+  background: #fff;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+h1 { margin: 0; font-size: 1.25rem; }
+.sub { margin: 0.25rem 0 0; color: #6b7280; font-size: 0.875rem; }
+.toolbar { padding: 1rem 1.5rem; display: flex; gap: 0.5rem; }
+button {
+  border: 1px solid #d1d5db;
+  background: #fff;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button.primary { background: #2563eb; color: #fff; border-color: #2563eb; }
+table {
+  margin: 0 1.5rem 2rem;
+  width: calc(100% - 3rem);
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 8%);
+}
+th, td { padding: 0.65rem 0.75rem; text-align: left; border-bottom: 1px solid #f0f0f0; }
+th { background: #f9fafb; font-size: 0.8rem; color: #6b7280; }
+dialog {
+  border: none;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  max-width: 560px;
+  width: min(560px, 96vw);
+  max-height: 90vh;
+}
+dialog form label { display: block; margin: 0.5rem 0; font-size: 0.875rem; }
+dialog input, dialog textarea, dialog select {
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.35rem 0.5rem;
+}
+.tabs { display: flex; gap: 0.25rem; margin: 0.75rem 0; flex-wrap: wrap; }
+.tab {
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+.tab.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+.tab-panel { display: none; max-height: 50vh; overflow-y: auto; padding-right: 0.25rem; }
+.tab-panel.active { display: block; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+.hint { font-size: 0.75rem; color: #6b7280; line-height: 1.4; }
+.actions button { margin-right: 0.25rem; }
+button.small { font-size: 0.75rem; padding: 0.3rem 0.5rem; margin-top: 0.35rem; }
+label.inline { display: flex; align-items: center; gap: 0.5rem; }
+label.inline input { width: auto; margin: 0; }
+menu { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem; }
